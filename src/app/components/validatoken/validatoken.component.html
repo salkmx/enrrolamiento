@@ -1,0 +1,253 @@
+
+  <div *ngIf="tokenValidado && !conToken">
+    <div class="alert alert-info">
+      Proporciona los siguientes datos para continuar con tu proceso de registro
+    </div>
+    <h3>Validaci&oacute;n de token</h3>
+    <hr class="red" style="margin-bottom:30px">
+    <form action="#" class="form form-horizontal" role="form" #formCuestionario="ngForm">
+      <div class="form-group">
+        <label for="curp" class="control-label col-sm-4">
+            CURP *:
+        </label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" [(ngModel)]="curp" name="curp"
+           id="curp" #curpUsuario="ngModel" [disabled]="preguntarVigencia" placeholder="Proporciona tu CURP"
+           pattern="[A-Z]{1}[AEIOU]{1}[A-Z]{2}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM]{1}(AS|BC|BS|CC|CS|CH|CL|CM|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]{1}[0-9]{1}$"
+           required/>
+          <small *ngIf="curpUsuario.touched && curpUsuario.hasError('required')" class="error">
+            Este campo es obligatorio.
+          </small>
+          <small *ngIf="curpUsuario.touched && curpUsuario.hasError('pattern')" class="error">
+            El formato de la CURP es incorrecto.
+          </small>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="correo" class="control-label col-sm-4">
+            Token *:
+        </label>
+        <div class="col-sm-4">
+          <input type="email" class="form-control" type="text" [(ngModel)]="token" name="correo"
+          id="correo" #correoUsuario="ngModel"  placeholder="Proporciona el token recibido"  required/>
+          <small *ngIf="correoUsuario.touched && correoUsuario.hasError('required')" class="error">
+            Este campo es obligatorio.
+          </small>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-4 text-right">
+          * Campos requeridos.
+        </div>
+        <div class="col-sm-4 text-right">
+          <button class="btn btn-primary" type="button" (click)="validaToken()"
+          [disabled]="!formCuestionario.form.valid">Validar token</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="" id="continuacionTramite" *ngIf="preguntarVigencia">
+    <div class="alert alert-info">
+      Proporciona los siguientes datos para continuar con tu proceso de registro
+    </div>
+    <h3>Datos complementarios del registro</h3>
+    <hr class="red" style="margin-bottom:30px">
+    <form action="#" class="form form-horizontal" id="formularioCuenta" #formularioCuenta="ngForm">
+      <div class="form-group" *ngIf="preguntarVigencia">
+          <label for="vigente" class="control-label col-sm-4">
+            &iquest;Te encuentras vigente? *:
+          </label>
+          <div class="col-sm-4">
+            <div class="radio">
+              <label>
+                <input type="radio" value="true" name="vigente" [(ngModel)]="vigente"
+                [disabled]="preguntarPension" (change)="verificarVigencia()"> Si
+              </label>&nbsp;&nbsp;
+              <label>
+                <input type="radio" value="false" name="vigente" [(ngModel)]="vigente"
+                [disabled]="preguntarPension" (change)="verificarVigencia()"> No
+              </label>
+            </div>
+          </div>
+      </div>
+
+      <div class="form-group" *ngIf="preguntarPension">
+        <label for="pensionado" class="control-label col-sm-4">
+          &iquest;Eres pensionado? *:
+        </label>
+        <div class="col-sm-4">
+          <div class="radio">
+            <label>
+              <input type="radio" value="true" name="pensionado" [(ngModel)]="pensionado"
+              [disabled]="preguntarDatosPension" (change)="verificarPension()"> Si
+            </label>&nbsp;&nbsp;
+            <label>
+              <input type="radio" value="false" name="pensionado" [(ngModel)]="pensionado"
+              [disabled]="preguntarDatosPension" (change)="verificarPension()"> No
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="preguntarDatosPension">
+        <div class="form-group" id="datosPension">
+          <label for="tipoPension" class="control-label col-sm-4">
+            Tipo de pensi&oacute;n *:
+          </label>
+          <div class="col-sm-4">
+            <select name="tipoPension" id="tipoPension" class="form-control" [(ngModel)]="tipoPension" #tipoPensionCapturada="ngModel" required>
+              <option value="1">Vejez</option>
+              <option value="2">Cesantia</option>
+            </select>
+            <small *ngIf="tipoPensionCapturada.touched && tipoPensionCapturada.hasError('required')" class="error">
+              Este campo es obligatorio.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group" id="datosPension">
+          <label for="anioPension" class="control-label col-sm-4">
+            A&ntilde;o pensi&oacute;n *:
+          </label>
+          <div class="col-sm-4">
+              <input type="number" name="anioPension" class="form-control" id="anioPension" placeholder="AAAA"
+              maxlength="4" [(ngModel)]="anioPension" #anioPensionCapturada="ngModel" required/>
+              <small *ngIf="anioPensionCapturada.touched && anioPensionCapturada.hasError('required')" class="error">
+                Este campo es obligatorio.
+              </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="!preguntarDatosFinales">
+
+        <div class="col-sm-8 text-right">
+          <button class="btn btn-default" type="button"  style="margin-right:10px" data-toggle="modal"
+          data-target="#modalConfirmacion">Salir</button>
+        </div>
+      </div>
+
+      <div *ngIf="preguntarDatosFinales">
+        <h3>Medios de contacto</h3>
+        <hr class="red"  style="margin-bottom:30px">
+
+        <div class="form-group" id="">
+          <label for="celular" class="control-label col-sm-4">
+            Celular:
+          </label>
+          <div class="col-sm-4">
+              <input type="tel" name="celular" class="form-control" id="celular"
+              placeholder="Captura tu número celular"
+              [(ngModel)]="celular" #celularCapturado="ngModel" maxlength="10" >
+          </div>
+        </div>
+        <div class="form-group" id="">
+          <label for="celular" class="control-label col-sm-4">
+            Tel&eacute;fono :
+          </label>
+          <div class="col-sm-4">
+              <input type="tel" name="telefono" class="form-control" id="telefono"
+              placeholder="Captura tu número telef&oacute;nico"
+              [(ngModel)]="telefono" #celularCapturado="ngModel" maxlength="10" >
+          </div>
+        </div>
+        <div class="form-group" id="">
+          <label for="celular" class="control-label col-sm-4">
+            Correo electr&oacute;nico adicional :
+          </label>
+          <div class="col-sm-4">
+              <input type="tel" name="otroCorreo" class="form-control" id="otroCorreo"
+              placeholder="Captura un correo electr&oacute;nico"
+              pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+              [(ngModel)]="otroCorreo" #otroCorreoElectronico="ngModel" maxlength="50">
+              <small *ngIf="otroCorreoElectronico.touched && otroCorreoElectronico.hasError('pattern')" class="error">
+                El formato del correo es incorrecto.
+              </small>
+          </div>
+        </div>
+
+        <h3>Datos de la cuenta</h3>
+        <hr class="red"  style="margin-bottom:30px">
+
+        <div class="form-group">
+          <label for="password" class="control-label col-sm-4">
+            Contrase&ntilde;a *:
+          </label>
+          <div class="col-sm-4">
+              <input type="password" name="password" class="form-control" id="password"
+              placeholder="Escribe tu password" [(ngModel)]="password" #passwordCapturado="ngModel" required>
+              <small *ngIf="passwordCapturado.touched && passwordCapturado.hasError('required')" class="error">
+                Este campo es obligatorio.
+              </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="passwordR" class="control-label col-sm-4">
+            Confirma tu contrase&ntilde;a *:
+          </label>
+          <div class="col-sm-4">
+              <input type="password" name="passwordR" class="form-control" id="passwordR" [(ngModel)]="passwordR"
+              #repitePassword="ngModel" pattern="{{passwordCapturado.value}}" placeholder="Repite tu contraseña" required>
+              <small *ngIf="repitePassword.touched && repitePassword.hasError('required')" class="error">
+                Este campo es obligatorio.
+              </small>
+              <small *ngIf="repitePassword.touched && repitePassword.hasError('pattern')" class="error">
+                La confirmacion de la contrase&ntilde;a no coincide.
+              </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+
+          <div class="col-sm-8 text-right">
+            <div class="" style="float: left; padding-top:10px">
+              * Campos requeridos.
+            </div>
+            <button class="btn btn-default" type="button"  style="margin-right:10px" data-toggle="modal"
+            data-target="#modalConfirmacion">Salir</button>
+            <button class="btn btn-danger" type="button"  style="margin-right:10px" data-toggle="modal"
+            data-target="#modalConfirmacion">Cancelar</button>
+            <button class="btn btn-primary" type="button" [disabled]="!formularioCuenta.form.valid"
+            data-toggle="modal" data-target="#modalConfirmacionRegistro">Finalizar tr&aacute;mite</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="modal fade" id="modalConfirmacion">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Confirmaci&oacute;n requerida</h4>
+          </div>
+          <div class="modal-body">
+            <p>&iquest;Estas seguro de cancelar? Se borrar&aacute; toda la informaci&oacute;n. </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="limpiarFormulario(formCuestionario)">Si</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="modalConfirmacionRegistro">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Confirmacion registro</h4>
+          </div>
+          <div class="modal-body">
+            <p>Se realizará tu registro &iquest;Est&aacute;s seguro? </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Si</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div>
+<block-ui></block-ui>
